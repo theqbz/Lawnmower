@@ -2,5 +2,7 @@
 
 int main()
 {
+    Simulation s("map1.txt");
+    s.drawGarden();
     return 0;
 }
