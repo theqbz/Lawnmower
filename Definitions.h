@@ -7,12 +7,13 @@
 
 struct Pixel
 {
-    short x, y;
+    short y, x;
+    Pixel operator+(const Pixel&) const;
 };
 
 struct Location
 {
-    float x, y;
+    float y, x;
 };
 
 struct Colors
@@ -31,6 +32,9 @@ struct Colors
 #define GRASS_COLOR         Colors{2,10}
 #define BARRIER_ICON        char(88)
 #define BARRIER_COLOR       Colors{14,2}
+#define TREE_ICON           char(5)
+#define TREE_COLOR          Colors{6,2}
 #define MAP_GRASS_ICON      '.'
 #define MAP_BARRIER_ICON    'w'
+#define MAP_TREE_ICON       't'
 

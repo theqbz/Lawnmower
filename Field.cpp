@@ -1,5 +1,7 @@
 #include "Field.h"
 
+short Field::count = 0;
+
 Field::Field(const char& icon, const Pixel& pixel) :
     Screen(pixel)
 {
@@ -13,5 +15,16 @@ Field::Field(const char& icon, const Pixel& pixel) :
         this->icon = BARRIER_ICON;
         this->colors = BARRIER_COLOR;
     }
+    else if (icon == MAP_TREE_ICON) {
+        grass = false;
+        this->icon = TREE_ICON;
+        this->colors = TREE_COLOR;
+    }
     progress = 100;
+    count++;
+}
+
+Field::~Field()
+{
+    count--;
 }

@@ -16,12 +16,18 @@ void Screen::draw() const
     setCursorPosition();
     setDrawColor();
     std::cout << icon;
+    restoreDrawColor();
 }
 
 void Screen::setCursorPosition() const
 {
     COORD coords = { pixel.x,pixel.y };
     SetConsoleCursorPosition(console, coords);
+}
+
+void Screen::restoreDrawColor() const
+{
+    SetConsoleTextAttribute(console, 15);
 }
 
 void Screen::setDrawColor() const

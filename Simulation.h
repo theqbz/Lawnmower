@@ -5,8 +5,9 @@
 
 class Simulation
 {
-    short gardenWidth, gardenHeight;
+    short gardenX, gardenY;
     short dockX, dockY;
+    Pixel gardenOffset;
     Field*** garden;
     Lawnmower* robot;
     static unsigned short grassCounter;
@@ -16,6 +17,7 @@ class Simulation
 
 public:
     Simulation(const std::string&);
+    ~Simulation();
     void drawGarden() const;
 
 };

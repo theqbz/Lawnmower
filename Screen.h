@@ -13,7 +13,9 @@ public:
     Screen(const char&, const Pixel&);
     Screen(const char&, const Pixel&, const Colors& color);
     void draw() const;
-    void setCursorPosition() const;
+protected:
     void setDrawColor() const;
+    void setCursorPosition() const;
+    void restoreDrawColor() const;
 };
 

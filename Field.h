@@ -10,7 +10,9 @@ class Field :
     void changeIcon();
 
 public:
+    static short count;
     Field(const char&, const Pixel&);
+    ~Field();
     bool isGrass();
     void cutGrass();
 };
