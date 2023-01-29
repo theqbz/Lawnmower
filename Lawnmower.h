@@ -5,16 +5,19 @@ class Lawnmower :
     public Screen
 {
     Location location;
-    float heading;
-    unsigned short battery;
-    Pixel dock;
+    float    heading;
+    short    battery;
+    Pixel    dock;
+    bool     dockInRange;
+    Location calculateDestination() const;
 
 public:
     Lawnmower(const Pixel&);
-    Location calculateDestination() const;
-    void calculateNewHeading();
+    Pixel destination() const;
+    void newHeading();
     void moveTo(const Location&);
     bool batteryLow();
     void recharge();
+    std::string getTelemetry() const;
 };
 

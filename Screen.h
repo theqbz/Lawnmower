@@ -4,16 +4,16 @@
 class Screen
 {
 protected:
-    static HANDLE console;
-    char icon;
-    Pixel pixel;
-    Colors colors;
+    char    icon;
+    Pixel   pixel;
+    Colors  colors;
 public:
     Screen(const Pixel&);
     Screen(const char&, const Pixel&);
-    Screen(const char&, const Pixel&, const Colors& color);
+    Screen(const char&, const Pixel&, const Colors&);
     void draw() const;
-protected:
+private:
+    static HANDLE console;
     void setDrawColor() const;
     void setCursorPosition() const;
     void restoreDrawColor() const;

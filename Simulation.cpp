@@ -12,6 +12,11 @@ std::vector<std::string> Simulation::readMapFromFile(const std::string& filename
     return map;
 }
 
+bool Simulation::endSimulation() const
+{
+    return quit || Field::uncutGrassCounter == 0;
+}
+
 void Simulation::generateGarden(const std::string& filename)
 {
     std::vector<std::string> gardenMap = readMapFromFile(filename);
@@ -45,7 +50,8 @@ Simulation::~Simulation()
 
 void Simulation::drawGarden() const
 {
-    std::cout << "GrassEater Simulation";
+    std::cout << "GrassEater Simulation\n";
+    std::cout << robot->getTelemetry() << "\tremain: " << Field::uncutGrassCounter << " blocks";
     for (short y = 0; y < gardenY; y++) for (short x = 0; x < gardenX; x++) 
             garden[y][x]->draw();
     robot->draw();
