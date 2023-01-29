@@ -8,13 +8,11 @@ void Field::updateIcon()
     else if (progress > 50) icon = GRASS_75_ICON;
     else if (progress > 25) icon = GRASS_50_ICON;
     else if (progress > 0) icon = GRASS_25_ICON;
-    else { icon = GRASS_0_ICON;
-        uncutGrassCounter--;
-    }
+    else icon = GRASS_0_ICON;
 }
 
-Field::Field(const char& icon, const Pixel& pixel) :
-    Screen(pixel)
+Field::Field(const char& icon, const Pixel& pixel, const Pixel& margin) :
+    Screen(pixel, margin)
 {
     if (icon == MAP_GRASS_ICON) {
         uncutGrassCounter++;
@@ -47,8 +45,11 @@ bool Field::isGrass()
 
 void Field::cutGrass(const float& amount)
 {
-    if (!grass) return;
-    if (progress == 0) return;
-    progress -= (short(amount * 100));
-    updateIcon();
+    if (!grass || this->progress == 0) return;
+    else {
+        this->progress -= (short)ceil(amount * 100);
+        if (this->progress == 0) Field::uncutGrassCounter--;
+        updateIcon();
+        draw();
+    }
 }

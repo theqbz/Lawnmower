@@ -5,11 +5,11 @@ Location Lawnmower::calculateDestination() const
     Location destination{ 0.0f,0.0f };
     destination.x = location.x + sin(heading);
     destination.y = location.y + cos(heading);
-    return Location();
+    return destination;
 }
 
-Lawnmower::Lawnmower(const Pixel& pixel) :
-    Screen(LAWNMOWER_ICON, pixel, LAWNMOWER_COLOR)
+Lawnmower::Lawnmower(const Pixel& pixel, const Pixel& margin) :
+    Screen(LAWNMOWER_ICON, pixel, margin, LAWNMOWER_COLOR)
 {
     location.x = (float)pixel.x + 0.5f;
     location.y = (float)pixel.y + 0.5f;
@@ -19,9 +19,49 @@ Lawnmower::Lawnmower(const Pixel& pixel) :
     dockInRange = true;
 }
 
+Pixel Lawnmower::destination() const
+{
+    Location destination = calculateDestination();
+    Pixel pixel = { 0,0 };
+    pixel.x = (short)destination.x;
+    pixel.y = (short)destination.y;
+    return pixel;
+}
+
+void Lawnmower::newHeading()
+{
+    short newHeading = 0;
+    bool goodHeading = false;
+    while (!goodHeading) {
+        newHeading = 0 + (rand() % (short)(2 * PI));
+        if (newHeading % 180 != (short)heading % 180) goodHeading = true;
+    }
+    heading = (float)newHeading;
+}
+
+Location Lawnmower::move(Pixel& destinationPixel)
+{
+    Location destination = calculateDestination();
+    location = destination;
+    battery--;
+    pixel.y = destinationPixel.y = (short)location.y;
+    pixel.x = destinationPixel.x = (short)location.x;
+    Location offset = { 0.0f,0.0f };
+    offset.y = location.y - ((short)location.y + 0.5f);
+    offset.x = location.x - ((short)location.x + 0.5f);
+    draw();
+    return offset;
+}
+
 bool Lawnmower::batteryLow()
 {
-    return battery < LAWNMOWER_LOW_BATTERY;
+    if (battery < 30) return true;
+    else return false;
+}
+
+void Lawnmower::recharge()
+{
+    battery = 100;
 }
 
 std::string Lawnmower::getTelemetry() const

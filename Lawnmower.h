@@ -12,10 +12,10 @@ class Lawnmower :
     Location calculateDestination() const;
 
 public:
-    Lawnmower(const Pixel&);
+    Lawnmower(const Pixel&, const Pixel&);
     Pixel destination() const;
     void newHeading();
-    void moveTo(const Location&);
+    Location move(Pixel&);
     bool batteryLow();
     void recharge();
     std::string getTelemetry() const;

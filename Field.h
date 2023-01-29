@@ -9,7 +9,7 @@ class Field :
     void updateIcon();
 public:
     static unsigned short uncutGrassCounter;
-    Field(const char&, const Pixel&);
+    Field(const char&, const Pixel&, const Pixel&);
     ~Field();
     bool isGrass();
     void cutGrass(const float&);

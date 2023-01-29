@@ -15,7 +15,10 @@ class Simulation
     void generateGarden(const std::string&);
     std::vector<std::string> readMapFromFile(const std::string&);
     bool endSimulation() const;
-    bool crush(const Pixel&) const;
+    bool crash(const Pixel&) const;
+    void moveAndCut();
+    void cut(const Pixel&, const Location&);
+    void refreshTelemetry() const;
 
 public:
     Simulation(const std::string&);

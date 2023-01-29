@@ -5,6 +5,8 @@
 #include <vector>
 #include <fstream>
 #include <cmath>
+#include <chrono>
+#include <thread>
 
 struct Pixel
 {
