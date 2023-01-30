@@ -6,6 +6,8 @@ Simulation::Simulation(const std::string& filename)
     generateGarden(filename);
     Pixel dock{ dockY - 1,dockX - 1 };
     robot = new Lawnmower(dock, gardenOffset);
+    quit = false;
+    speed = 10;
 }
 
 Simulation::~Simulation()
@@ -28,7 +30,7 @@ void Simulation::doSimulation()
             while (crash(robot->destination())) robot->newHeading();
             moveAndCut();
             refreshTelemetry();
-            //getUserCommand();
+            getUserCommand();
         }
         robot->recharge();
         refreshTelemetry();
@@ -141,17 +143,7 @@ void Simulation::clearTelemetryArea() const
     }
 }
 
-WORD Simulation::getKeystroke() const
-{
-    std::cin.clear();
-    DWORD readCount = 0;
-    INPUT_RECORD buffer[1];
-    ReadConsoleInput(Screen::keyboard, buffer, 1, &readCount);
-    return buffer[0].Event.KeyEvent.wVirtualKeyCode;
-}
-
 void Simulation::getUserCommand()
 {
-    WORD command = getKeystroke();
-    if (command == VK_ESCAPE) quit = true;
+    if (GetAsyncKeyState(VK_ESCAPE)) quit = true;
 }
