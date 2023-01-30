@@ -13,7 +13,8 @@ class Simulation
     bool       quit;
 
     void generateGarden(const std::string&);
-    std::vector<std::string> readMapFromFile(const std::string&);
+    vString readMapFromFile(const std::string&);
+    void drawGarden() const;
     bool endSimulation() const;
     bool crash(const Pixel&) const;
     void moveAndCut();
@@ -25,7 +26,6 @@ class Simulation
 public:
     Simulation(const std::string&);
     ~Simulation();
-    void drawGarden() const;
     void doSimulation();
 };
 

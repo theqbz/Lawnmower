@@ -2,15 +2,6 @@
 
 short Field::uncutGrassCounter = 0;
 
-void Field::updateIcon()
-{
-    if (progress > 75) icon = GRASS_100_ICON;
-    else if (progress > 50) icon = GRASS_75_ICON;
-    else if (progress > 25) icon = GRASS_50_ICON;
-    else if (progress > 0) icon = GRASS_25_ICON;
-    else icon = GRASS_0_ICON;
-}
-
 Field::Field(const char& icon, const Pixel& pixel, const Pixel& margin) :
     Screen(pixel, margin)
 {
@@ -30,12 +21,26 @@ Field::Field(const char& icon, const Pixel& pixel, const Pixel& margin) :
         this->icon = TREE_ICON;
         this->colors = TREE_COLOR;
     }
+    else if (icon == MAP_DOCK_ICON) {
+        grass = false;
+        this->icon = DOCK_ICON;
+        this->colors = DOCK_COLOR;
+    }
     else grass = false;
     progress = 100;
 }
 
 Field::~Field()
 {
+}
+
+void Field::updateIcon()
+{
+    if (progress > 75) icon = GRASS_100_ICON;
+    else if (progress > 50) icon = GRASS_75_ICON;
+    else if (progress > 25) icon = GRASS_50_ICON;
+    else if (progress > 0) icon = GRASS_25_ICON;
+    else icon = GRASS_0_ICON;
 }
 
 bool Field::isGrass()

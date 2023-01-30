@@ -1,15 +1,74 @@
 #include "Simulation.h"
 
-
-std::vector<std::string> Simulation::readMapFromFile(const std::string& filename)
+Simulation::Simulation(const std::string& filename)
 {
-    std::vector<std::string> map;
+    gardenOffset = { 2,1 };
+    generateGarden(filename);
+    Pixel dock{ dockY - 1,dockX - 1 };
+    robot = new Lawnmower(dock, gardenOffset);
+}
+
+Simulation::~Simulation()
+{
+    for (short y = 0; y < gardenY; y++) {
+        for (short x = 0; x < gardenX; x++) {
+            delete garden[y][x];
+        }
+        delete[] garden[y];
+    }
+    delete[] garden;
+    delete robot;
+}
+
+void Simulation::doSimulation()
+{
+    drawGarden();
+    while (!endSimulation()) {
+        while (!robot->batteryLow() && !endSimulation()) {
+            while (crash(robot->destination())) robot->newHeading();
+            moveAndCut();
+            refreshTelemetry();
+            //getUserCommand();
+        }
+        robot->recharge();
+        refreshTelemetry();
+    }
+}
+
+void Simulation::generateGarden(const std::string& filename)
+{
+    vString gardenMap = readMapFromFile(filename);
+    garden = new Field**[gardenY];
+    for (short y = 0; y < gardenY; y++) garden[y] = new Field*[gardenX];
+    for (short y = 0; y < gardenY; y++) for (short x = 0; x < gardenX; x++) 
+        garden[y][x] = new Field(gardenMap[y][x], { y,x }, gardenOffset);
+}
+
+vString Simulation::readMapFromFile(const std::string& filename)
+{
+    vString       map;
     std::ifstream file(filename);
-    std::string line;
-    file >> gardenX >> gardenY >> dockX >> dockY;
+    std::string   line;
     while (file >> line) map.push_back(line);
     file.close();
+    gardenX = (short)map[0].length();
+    gardenY = (short)map.size();
+    for (short y = 0; y < map.size(); y++)
+        if (map[y].find(MAP_DOCK_ICON) != std::string::npos) {
+            dockY = y;
+            dockX = (short)map[y].find(MAP_DOCK_ICON);
+        }
     return map;
+}
+
+void Simulation::drawGarden() const
+{
+    system("cls");
+    std::cout << "GrassEater Simulation\n";
+    std::cout << "remain: " << Field::uncutGrassCounter << "\t" << robot->getTelemetry();
+    for (short y = 0; y < gardenY; y++) for (short x = 0; x < gardenX; x++) 
+            garden[y][x]->draw();
+    robot->draw();
 }
 
 bool Simulation::endSimulation() const
@@ -31,7 +90,6 @@ void Simulation::moveAndCut()
     cut(destination, offset);
     robot->draw();
     garden[prewiousPixel.y][prewiousPixel.x]->draw();
-
 }
 
 void Simulation::cut(const Pixel& pixel, const Location& offset)
@@ -65,10 +123,11 @@ void Simulation::refreshTelemetry() const
 {
     COORD c{ 0,1 };
     SetConsoleCursorPosition(Screen::console, c);
-    std::cout << "                                                                                                                ";
+    for (short i = 0; i < 110; i++) std::cout << " ";
     SetConsoleCursorPosition(Screen::console, c);
-    std::cout << "remain: " << Field::uncutGrassCounter << "\t" << robot->getTelemetry();
-    Sleep(50);
+    std::cout << "remain: " << Field::uncutGrassCounter
+        << "\t" << robot->getTelemetry();
+    Sleep(10);
 }
 
 WORD Simulation::getKeystroke() const
@@ -84,60 +143,4 @@ void Simulation::getUserCommand()
 {
     WORD command = getKeystroke();
     if (command == VK_ESCAPE) quit = true;
-}
-
-void Simulation::generateGarden(const std::string& filename)
-{
-    std::vector<std::string> gardenMap = readMapFromFile(filename);
-    garden = new Field**[gardenY];
-    for (short y = 0; y < gardenY; y++) garden[y] = new Field*[gardenX];
-    for (short y = 0; y < gardenY; y++) for (short x = 0; x < gardenX; x++) {
-        Pixel pixel{ y,x };
-        garden[y][x] = new Field(gardenMap[y][x], pixel, gardenOffset);
-    }
-}
-
-Simulation::Simulation(const std::string& filename)
-{
-    gardenOffset = { 2,1 };
-    generateGarden(filename);
-    Pixel dock{ dockY - 1,dockX - 1 };
-    robot = new Lawnmower(dock, gardenOffset);
-}
-
-Simulation::~Simulation()
-{
-    for (short y = 0; y < gardenY; y++) {
-        for (short x = 0; x < gardenX; x++) {
-            delete garden[y][x];
-        }
-        delete[] garden[y];
-    }
-    delete[] garden;
-    delete robot;
-}
-
-void Simulation::drawGarden() const
-{
-    std::cout << "GrassEater Simulation\n";
-    std::cout << robot->getTelemetry() << "\tremain: " << Field::uncutGrassCounter << " blocks";
-    for (short y = 0; y < gardenY; y++) for (short x = 0; x < gardenX; x++) 
-            garden[y][x]->draw();
-    robot->draw();
-}
-
-void Simulation::doSimulation()
-{
-    while (!endSimulation()) {
-        while (!robot->batteryLow() && !endSimulation()) {
-            while (crash(robot->destination())) {
-                robot->newHeading();
-            }
-            moveAndCut();
-            refreshTelemetry();
-            getUserCommand();
-        }
-        robot->recharge();
-        refreshTelemetry();
-    }
 }

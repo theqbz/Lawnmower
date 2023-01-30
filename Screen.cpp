@@ -4,10 +4,17 @@ HANDLE Screen::console = GetStdHandle(STD_OUTPUT_HANDLE);
 HANDLE Screen::keyboard = GetStdHandle(STD_INPUT_HANDLE);
 
 Screen::Screen(const Pixel& pixel, const Pixel& margin) :
-    pixel(pixel), margin(margin) {}
+    pixel(pixel), margin(margin)
+{
+    icon = UNDEF_ICON;
+    colors = UNDEF_COLOR;
+}
 
 Screen::Screen(const char& icon, const Pixel& pixel, const Pixel& margin) :
-    icon(icon), pixel(pixel), margin(margin) {}
+    icon(icon), pixel(pixel), margin(margin)
+{
+    colors = UNDEF_COLOR;
+}
 
 Screen::Screen(const char& icon, const Pixel& pixel, const Pixel& margin, const Colors& colors) :
     icon(icon), pixel(pixel), margin(margin), colors(colors) {}

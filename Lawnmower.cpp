@@ -1,13 +1,5 @@
 #include "Lawnmower.h"
 
-Location Lawnmower::calculateDestination() const
-{
-    Location destination{ 0.0f,0.0f };
-    destination.x = location.x + cos(heading);
-    destination.y = location.y + sin(heading);
-    return destination;
-}
-
 Lawnmower::Lawnmower(const Pixel& pixel, const Pixel& margin) :
     Screen(LAWNMOWER_ICON, pixel, margin, LAWNMOWER_COLOR)
 {
@@ -17,6 +9,22 @@ Lawnmower::Lawnmower(const Pixel& pixel, const Pixel& margin) :
     battery = 100;
     dock = pixel;
     dockInRange = true;
+}
+
+Location Lawnmower::calculateDestination() const
+{
+    Location destination{ 0.0f,0.0f };
+    destination.x = location.x + cos(heading);
+    destination.y = location.y + sin(heading);
+    return destination;
+}
+
+Location Lawnmower::offsetCalculation() const
+{
+    Location offset = { 0.0f,0.0f };
+    offset.y = location.y - ((short)location.y + 0.5f);
+    offset.x = location.x - ((short)location.x + 0.5f);
+    return offset;
 }
 
 Pixel Lawnmower::destination() const
@@ -33,7 +41,7 @@ void Lawnmower::newHeading()
     bool goodHeading = false;
     while (!goodHeading) {
         short newHeading = 0 + (rand() % 360);
-        if (newHeading % 180 != (short)heading % 180) {
+        if (newHeading % 180 != ((short)((180*heading)/PI)) % 180) {
             heading = (PI * (float)newHeading) / 180;
             goodHeading = true;
         }
@@ -42,21 +50,16 @@ void Lawnmower::newHeading()
 
 Location Lawnmower::move(Pixel& destinationPixel)
 {
-    Location destination = calculateDestination();
-    location = destination;
+    location = calculateDestination();
+    pixel.reciveLocation(location);
     battery--;
-    pixel.y = destinationPixel.y = (short)location.y;
-    pixel.x = destinationPixel.x = (short)location.x;
-    Location offset = { 0.0f,0.0f };
-    offset.y = location.y - ((short)location.y + 0.5f);
-    offset.x = location.x - ((short)location.x + 0.5f);
-    draw();
-    return offset;
+    destinationPixel = pixel;
+    return offsetCalculation();
 }
 
-bool Lawnmower::batteryLow()
+bool Lawnmower::batteryLow() const
 {
-    if (battery < 30) return true;
+    if (battery < LAWNMOWER_LOW_BATTERY) return true;
     else return false;
 }
 
