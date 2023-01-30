@@ -1,6 +1,7 @@
 #include "Screen.h"
 
 HANDLE Screen::console = GetStdHandle(STD_OUTPUT_HANDLE);
+HANDLE Screen::keyboard = GetStdHandle(STD_INPUT_HANDLE);
 
 Screen::Screen(const Pixel& pixel, const Pixel& margin) :
     pixel(pixel), margin(margin) {}

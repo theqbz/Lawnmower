@@ -8,7 +8,7 @@ class Field :
     short progress;
     void updateIcon();
 public:
-    static unsigned short uncutGrassCounter;
+    static short uncutGrassCounter;
     Field(const char&, const Pixel&, const Pixel&);
     ~Field();
     bool isGrass();

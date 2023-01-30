@@ -1,6 +1,6 @@
 #include "Field.h"
 
-unsigned short Field::uncutGrassCounter = 0;
+short Field::uncutGrassCounter = 0;
 
 void Field::updateIcon()
 {
@@ -17,7 +17,7 @@ Field::Field(const char& icon, const Pixel& pixel, const Pixel& margin) :
     if (icon == MAP_GRASS_ICON) {
         uncutGrassCounter++;
         grass = true;
-        this->icon = GRASS_100_ICON;
+        this->icon = GRASS_NEW_ICON;
         this->colors = GRASS_COLOR;
     }
     else if (icon == MAP_BARRIER_ICON) {
@@ -45,11 +45,9 @@ bool Field::isGrass()
 
 void Field::cutGrass(const float& amount)
 {
-    if (!grass || this->progress == 0) return;
-    else {
-        this->progress -= (short)ceil(amount * 100);
-        if (this->progress == 0) Field::uncutGrassCounter--;
-        updateIcon();
-        draw();
-    }
+    if (!grass || progress <= 0) return;
+    progress -= (short)ceil(amount * 100);
+    if (progress < 1) Field::uncutGrassCounter--;
+    updateIcon();
+    draw();
 }

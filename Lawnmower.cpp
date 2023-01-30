@@ -3,8 +3,8 @@
 Location Lawnmower::calculateDestination() const
 {
     Location destination{ 0.0f,0.0f };
-    destination.x = location.x + sin(heading);
-    destination.y = location.y + cos(heading);
+    destination.x = location.x + cos(heading);
+    destination.y = location.y + sin(heading);
     return destination;
 }
 
@@ -30,13 +30,14 @@ Pixel Lawnmower::destination() const
 
 void Lawnmower::newHeading()
 {
-    short newHeading = 0;
     bool goodHeading = false;
     while (!goodHeading) {
-        newHeading = 0 + (rand() % (short)(2 * PI));
-        if (newHeading % 180 != (short)heading % 180) goodHeading = true;
+        short newHeading = 0 + (rand() % 360);
+        if (newHeading % 180 != (short)heading % 180) {
+            heading = (PI * (float)newHeading) / 180;
+            goodHeading = true;
+        }
     }
-    heading = (float)newHeading;
 }
 
 Location Lawnmower::move(Pixel& destinationPixel)
@@ -66,8 +67,10 @@ void Lawnmower::recharge()
 
 std::string Lawnmower::getTelemetry() const
 {
-    return "loc: " + std::to_string(location.y) + "," + std::to_string(location.x)
+
+    return
+        "batt: " + std::to_string(battery) + "%"
+        + "\thead: " + std::to_string((short)((180 * heading) / PI)) + char(248)
         + "\tcell: " + std::to_string(pixel.y) + "," + std::to_string(pixel.x)
-        + "\theading: " + std::to_string(heading) + " rad"
-        + "\tbattery: " + std::to_string(battery) + "%";
+        + "\tloc: " + std::to_string(location.y) + "," + std::to_string(location.x);
 }

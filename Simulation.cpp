@@ -14,7 +14,7 @@ std::vector<std::string> Simulation::readMapFromFile(const std::string& filename
 
 bool Simulation::endSimulation() const
 {
-    return quit || Field::uncutGrassCounter == 0;
+    return (quit || (Field::uncutGrassCounter < 1));
 }
 
 bool Simulation::crash(const Pixel& pixel) const
@@ -36,27 +36,27 @@ void Simulation::moveAndCut()
 
 void Simulation::cut(const Pixel& pixel, const Location& offset)
 {
-    garden[pixel.y][pixel.x]->cutGrass(abs((1-offset.y)*(1-offset.x)));
+    garden[pixel.y][pixel.x]->cutGrass((1-abs(offset.y))*(1-abs(offset.x)));
     if (offset.y > 0) {
-        garden[pixel.y + 1][pixel.x]->cutGrass(abs(offset.y * (1 - offset.x)));
+        garden[pixel.y + 1][pixel.x]->cutGrass(abs(offset.y) * (1 - abs(offset.x)));
         if (offset.x > 0) {
-            garden[pixel.y + 1][pixel.x + 1]->cutGrass(abs(offset.y * offset.x));
-            garden[pixel.y][pixel.x + 1]->cutGrass(abs((1 - offset.y) * offset.x));
+            garden[pixel.y + 1][pixel.x + 1]->cutGrass(abs(offset.y) * abs(offset.x));
+            garden[pixel.y][pixel.x + 1]->cutGrass((1 - abs(offset.y)) * abs(offset.x));
         }
         else if (offset.x < 0) {
-            garden[pixel.y + 1][pixel.x - 1]->cutGrass(abs(offset.y * offset.x));
-            garden[pixel.y][pixel.x - 1]->cutGrass(abs((1 - offset.y) * offset.x));
+            garden[pixel.y + 1][pixel.x - 1]->cutGrass(abs(offset.y) * abs(offset.x));
+            garden[pixel.y][pixel.x - 1]->cutGrass((1 - abs(offset.y)) * abs(offset.x));
         }
     }
     else if (offset.y < 0) {
-        garden[pixel.y - 1][pixel.x]->cutGrass(abs(offset.y * (1 - offset.x)));
+        garden[pixel.y - 1][pixel.x]->cutGrass(abs(offset.y) * (1 - abs(offset.x)));
         if (offset.x > 0) {
-            garden[pixel.y - 1][pixel.x + 1]->cutGrass(abs(offset.y * offset.x));
-            garden[pixel.y][pixel.x + 1]->cutGrass(abs((1 - offset.y) * offset.x));
+            garden[pixel.y - 1][pixel.x + 1]->cutGrass(abs(offset.y) * abs(offset.x));
+            garden[pixel.y][pixel.x + 1]->cutGrass((1 - abs(offset.y)) * abs(offset.x));
         }
         else if (offset.x < 0) {
-            garden[pixel.y - 1][pixel.x - 1]->cutGrass(abs(offset.y * offset.x));
-            garden[pixel.y][pixel.x - 1]->cutGrass(abs((1 - offset.y) * offset.x));
+            garden[pixel.y - 1][pixel.x - 1]->cutGrass(abs(offset.y) * abs(offset.x));
+            garden[pixel.y][pixel.x - 1]->cutGrass((1 - abs(offset.y)) * abs(offset.x));
         }
     }
 }
@@ -67,8 +67,23 @@ void Simulation::refreshTelemetry() const
     SetConsoleCursorPosition(Screen::console, c);
     std::cout << "                                                                                                                ";
     SetConsoleCursorPosition(Screen::console, c);
-    std::cout << robot->getTelemetry() << "\tremain: " << Field::uncutGrassCounter << " blocks";
-    Sleep(200);
+    std::cout << "remain: " << Field::uncutGrassCounter << "\t" << robot->getTelemetry();
+    Sleep(50);
+}
+
+WORD Simulation::getKeystroke() const
+{
+    std::cin.clear();
+    DWORD readCount = 0;
+    INPUT_RECORD buffer[1];
+    ReadConsoleInput(Screen::keyboard, buffer, 1, &readCount);
+    return buffer[0].Event.KeyEvent.wVirtualKeyCode;
+}
+
+void Simulation::getUserCommand()
+{
+    WORD command = getKeystroke();
+    if (command == VK_ESCAPE) quit = true;
 }
 
 void Simulation::generateGarden(const std::string& filename)
@@ -84,7 +99,7 @@ void Simulation::generateGarden(const std::string& filename)
 
 Simulation::Simulation(const std::string& filename)
 {
-    gardenOffset = { 2,0 };
+    gardenOffset = { 2,1 };
     generateGarden(filename);
     Pixel dock{ dockY - 1,dockX - 1 };
     robot = new Lawnmower(dock, gardenOffset);
@@ -120,6 +135,7 @@ void Simulation::doSimulation()
             }
             moveAndCut();
             refreshTelemetry();
+            getUserCommand();
         }
         robot->recharge();
         refreshTelemetry();

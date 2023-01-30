@@ -19,6 +19,8 @@ class Simulation
     void moveAndCut();
     void cut(const Pixel&, const Location&);
     void refreshTelemetry() const;
+    WORD getKeystroke() const;
+    void getUserCommand();
 
 public:
     Simulation(const std::string&);
