@@ -11,6 +11,7 @@ class Simulation
     Field***   garden;
     Lawnmower* robot;
     bool       quit;
+    short      speed;
 
     void generateGarden(const std::string&);
     vString readMapFromFile(const std::string&);
@@ -20,7 +21,7 @@ class Simulation
     void moveAndCut();
     void cut(const Pixel&, const Location&);
     void refreshTelemetry() const;
-    WORD getKeystroke() const;
+    void clearTelemetryArea() const;
     void getUserCommand();
 
 public:
