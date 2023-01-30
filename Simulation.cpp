@@ -2,7 +2,7 @@
 
 Simulation::Simulation(const std::string& filename)
 {
-    gardenOffset = { 2,1 };
+    gardenOffset = { 2,13 };
     generateGarden(filename);
     Pixel dock{ dockY - 1,dockX - 1 };
     robot = new Lawnmower(dock, gardenOffset);
@@ -64,8 +64,7 @@ vString Simulation::readMapFromFile(const std::string& filename)
 void Simulation::drawGarden() const
 {
     system("cls");
-    std::cout << "GrassEater Simulation\n";
-    std::cout << "remain: " << Field::uncutGrassCounter << "\t" << robot->getTelemetry();
+    std::cout << "GrassEater Simulation";
     for (short y = 0; y < gardenY; y++) for (short x = 0; x < gardenX; x++) 
             garden[y][x]->draw();
     robot->draw();
@@ -121,13 +120,25 @@ void Simulation::cut(const Pixel& pixel, const Location& offset)
 
 void Simulation::refreshTelemetry() const
 {
-    COORD c{ 0,1 };
+    COORD c{ 1,2 };
     SetConsoleCursorPosition(Screen::console, c);
-    for (short i = 0; i < 110; i++) std::cout << " ";
+    clearTelemetryArea();
     SetConsoleCursorPosition(Screen::console, c);
-    std::cout << "remain: " << Field::uncutGrassCounter
-        << "\t" << robot->getTelemetry();
+    robot->printTelemetry();
+    if (Field::uncutGrassCounter == 0) std::cout << "\n\n COMPLETE!\n";
+    else std::cout << "\nremain:\n" << Field::uncutGrassCounter << " blocks";
     Sleep(10);
+}
+
+void Simulation::clearTelemetryArea() const
+{
+    short rows = 13;
+    for (short y = 0; y < rows; y++) {
+        for (short x = 0; x < gardenOffset.x-1; x++) {
+            std::cout << " ";
+        }
+        std::cout << "\n";
+    }
 }
 
 WORD Simulation::getKeystroke() const

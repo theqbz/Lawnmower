@@ -1,5 +1,7 @@
 #include "Lawnmower.h"
 
+unsigned long Lawnmower::stepCounter = 0;
+
 Lawnmower::Lawnmower(const Pixel& pixel, const Pixel& margin) :
     Screen(LAWNMOWER_ICON, pixel, margin, LAWNMOWER_COLOR)
 {
@@ -53,6 +55,7 @@ Location Lawnmower::move(Pixel& destinationPixel)
     location = calculateDestination();
     pixel.reciveLocation(location);
     battery--;
+    stepCounter++;
     destinationPixel = pixel;
     return offsetCalculation();
 }
@@ -76,4 +79,14 @@ std::string Lawnmower::getTelemetry() const
         + "\thead: " + std::to_string((short)((180 * heading) / PI)) + char(248)
         + "\tcell: " + std::to_string(pixel.y) + "," + std::to_string(pixel.x)
         + "\tloc: " + std::to_string(location.y) + "," + std::to_string(location.x);
+}
+
+void Lawnmower::printTelemetry() const
+{
+    std::cout << "TELEMETRY\n"
+        << "\nbattery:\n" << std::setprecision(3) << battery << "%"
+        << "\ncell:\n" << pixel.x << ", " << pixel.y
+        << "\nheading:\n" << (short)((180 * heading) / PI) << char(248)
+        << "\nlocation:\n" << std::setprecision(4) << location.x << "," << location.y
+        << "\nmoves:\n" << stepCounter;
 }

@@ -14,6 +14,7 @@ class Lawnmower :
     Location offsetCalculation() const;
 
 public:
+    static unsigned long stepCounter;
     Lawnmower(const Pixel&, const Pixel&);
     Pixel destination() const;
     void newHeading();
@@ -21,5 +22,6 @@ public:
     bool batteryLow() const;
     void recharge();
     std::string getTelemetry() const;
+    void printTelemetry() const;
 };
 
