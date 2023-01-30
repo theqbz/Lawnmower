@@ -32,6 +32,8 @@ void Simulation::doSimulation()
             refreshTelemetry();
             getUserCommand();
         }
+        //while(!robotSeeDock()&&!endSimulation()) searchForCharger()
+        //while(!robotReachDock()&&!endSimulation()) moveToDock()
         robot->recharge();
         refreshTelemetry();
     }
@@ -134,7 +136,7 @@ void Simulation::refreshTelemetry() const
 
 void Simulation::clearTelemetryArea() const
 {
-    short rows = 13;
+    short rows = 14;
     for (short y = 0; y < rows; y++) {
         for (short x = 0; x < gardenOffset.x-1; x++) {
             std::cout << " ";
