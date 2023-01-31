@@ -2,15 +2,20 @@
 
 unsigned long Lawnmower::stepCounter = 0;
 
-Lawnmower::Lawnmower(const Pixel& pixel, const Pixel& margin) :
-    Screen(LAWNMOWER_ICON, pixel, margin, LAWNMOWER_COLOR)
+Lawnmower::Lawnmower(const Pixel& dockPixel, const Pixel& margin) :
+    Screen(LAWNMOWER_ICON, dockPixel, margin, LAWNMOWER_COLOR)
 {
-    location.x = (float)pixel.x + 0.5f;
-    location.y = (float)pixel.y + 0.5f;
+    location.x = (float)dockPixel.x + 0.5f;
+    location.y = (float)dockPixel.y + 0.5f;
     heading = PI / 2.0f;
     battery = 100;
-    dock = pixel;
+    dock = dockPixel;
     dockInRange = true;
+}
+
+Location Lawnmower::getLocation() const
+{
+    return location;
 }
 
 Location Lawnmower::calculateDestination() const
@@ -18,6 +23,14 @@ Location Lawnmower::calculateDestination() const
     Location destination{ 0.0f,0.0f };
     destination.x = location.x + cos(heading);
     destination.y = location.y + sin(heading);
+    return destination;
+}
+
+Location Lawnmower::testCalculateDestination(const Location& testLocation, const float& testHeading) const
+{
+    Location destination{ 0.0f,0.0f };
+    destination.x = testLocation.x + cos(testHeading);
+    destination.y = testLocation.y + sin(testHeading);
     return destination;
 }
 
@@ -33,8 +46,15 @@ Pixel Lawnmower::destination() const
 {
     Location destination = calculateDestination();
     Pixel pixel = { 0,0 };
-    pixel.x = (short)destination.x;
-    pixel.y = (short)destination.y;
+    pixel.reciveLocation(destination);
+    return pixel;
+}
+
+Pixel Lawnmower::testDestination(const Location& testLocation, const float& testHeading) const
+{
+    Location destination = testCalculateDestination(testLocation, testHeading);
+    Pixel pixel = { 0,0 };
+    pixel.reciveLocation(destination);
     return pixel;
 }
 
@@ -60,10 +80,38 @@ Location Lawnmower::move(Pixel& destinationPixel)
     return offsetCalculation();
 }
 
+Location Lawnmower::testMove(const Location& testLocation, const float& testHeading) const
+{
+    return testCalculateDestination(testLocation, testHeading);
+}
+
+float Lawnmower::lineToDock() const
+{
+    if (pixel.x == dock.x) {
+        if (pixel.y > dock.y) return (3.0f * PI) / 2.0f;
+        if (pixel.y < dock.y) return PI / 2.0f;
+    }
+    else if (pixel.y == dock.y) {
+        if (pixel.x > dock.x) return PI;
+        if (pixel.x < dock.x) return 0.0f;
+    }
+    else {
+        if (pixel.x > dock.x) return atan((location.y - (dock.y + 0.5)) / (location.x - (dock.x + 0.5))) + PI;
+        if (pixel.x < dock.x) return atan((location.y - (dock.y + 0.5)) / (location.x - (dock.x + 0.5)));
+    }
+}
+
 bool Lawnmower::batteryLow() const
 {
     if (battery < LAWNMOWER_LOW_BATTERY) return true;
     else return false;
+}
+
+void Lawnmower::moveToDock()
+{
+    heading = lineToDock();
+    location = calculateDestination();
+    pixel.reciveLocation(location);
 }
 
 void Lawnmower::recharge()

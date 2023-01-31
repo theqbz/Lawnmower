@@ -16,6 +16,18 @@ Pixel Pixel::operator+(const Pixel& right) const
     return pixel;
 }
 
+Pixel& Pixel::operator--()
+{
+    this->y--;
+    this->x--;
+    return *this;
+}
+
+bool Pixel::operator==(const Pixel& right) const
+{
+    return this->x == right.x && this->y == right.y;
+}
+
 void Pixel::reciveLocation(const Location& location)
 {
     this->y = (short)location.y;

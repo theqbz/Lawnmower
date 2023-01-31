@@ -55,11 +55,8 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <Text Include="map1.txt">
-      <Filter>Source Files</Filter>
-    </Text>
-    <Text Include="map2.txt">
-      <Filter>Source Files</Filter>
-    </Text>
+    <Text Include="map0.txt" />
+    <Text Include="map1.txt" />
+    <Text Include="map2.txt" />
   </ItemGroup>
 </Project>

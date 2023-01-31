@@ -4,8 +4,10 @@ Simulation::Simulation(const std::string& filename)
 {
     gardenOffset = { 2,13 };
     generateGarden(filename);
+    //dockY--;
+    //dockX--;
     Pixel dock{ dockY - 1,dockX - 1 };
-    robot = new Lawnmower(dock, gardenOffset);
+    robot = new Lawnmower({ dockY,dockX }, gardenOffset);
     quit = false;
     speed = 10;
 }
@@ -26,15 +28,9 @@ void Simulation::doSimulation()
 {
     drawGarden();
     while (!endSimulation()) {
-        while (!robot->batteryLow() && !endSimulation()) {
-            while (crash(robot->destination())) robot->newHeading();
-            moveAndCut();
-            refreshTelemetry();
-            getUserCommand();
-        }
-        //while(!robotSeeDock()&&!endSimulation()) searchForCharger()
-        //while(!robotReachDock()&&!endSimulation()) moveToDock()
-        robot->recharge();
+        while (!robot->batteryLow() && !endSimulation()) work();
+        while (!dockIsVisible() && !endSimulation()) work();
+        goToDock();
         refreshTelemetry();
     }
 }
@@ -76,12 +72,20 @@ void Simulation::drawGarden() const
 
 bool Simulation::endSimulation() const
 {
-    return (quit || (Field::uncutGrassCounter < 1));
+    return (quit || Field::uncutGrassCounter < 1);
+}
+
+void Simulation::work()
+{
+    while (crash(robot->destination())) robot->newHeading();
+    moveAndCut();
+    refreshTelemetry();
+    getUserCommand();
 }
 
 bool Simulation::crash(const Pixel& pixel) const
 {
-    if (garden[pixel.y][pixel.x]->isGrass()) return false;
+    if (garden[pixel.y][pixel.x]->isAwailable()) return false;
     else return true;
 }
 
@@ -122,6 +126,34 @@ void Simulation::cut(const Pixel& pixel, const Location& offset)
     }
 }
 
+bool Simulation::dockIsVisible() const
+{
+    // az irány nem megfelelõ még
+    Pixel    dock         = { dockY,dockX };
+    Pixel    nextPixel    = robot->getPixel();
+    float    testHeading  = robot->lineToDock();
+    Location testLocation = robot->getLocation();
+    while (!crash(nextPixel) && !(nextPixel == dock)) {
+        testLocation = robot->testMove(testLocation, testHeading);
+        nextPixel    = robot->testDestination(testLocation, testHeading);
+    }
+    if (nextPixel == dock) return true;
+    return false;
+}
+
+void Simulation::goToDock()
+{
+    Pixel dock{ dockY,dockX };
+    while (!(robot->getPixel() == dock)) {
+        Pixel previousPixel = robot->getPixel();
+        robot->moveToDock();
+        robot->draw();
+        garden[previousPixel.y][previousPixel.x]->draw();
+        refreshTelemetry();
+    }
+    robot->recharge();
+}
+
 void Simulation::refreshTelemetry() const
 {
     COORD c{ 1,2 };
@@ -131,7 +163,7 @@ void Simulation::refreshTelemetry() const
     robot->printTelemetry();
     if (Field::uncutGrassCounter == 0) std::cout << "\n\n COMPLETE!\n";
     else std::cout << "\nremain:\n" << Field::uncutGrassCounter << " blocks";
-    Sleep(10);
+    Sleep(100);
 }
 
 void Simulation::clearTelemetryArea() const

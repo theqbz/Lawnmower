@@ -143,6 +143,7 @@
     <ClInclude Include="Simulation.h" />
   </ItemGroup>
   <ItemGroup>
+    <Text Include="map0.txt" />
     <Text Include="map1.txt" />
     <Text Include="map2.txt" />
   </ItemGroup>

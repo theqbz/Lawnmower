@@ -22,6 +22,8 @@ struct Pixel
     short y, x;
     Pixel& operator=(const Pixel&);
     Pixel operator+(const Pixel&) const;
+    Pixel& operator--();
+    bool operator==(const Pixel&) const;
     void reciveLocation(const Location&);
 };
 

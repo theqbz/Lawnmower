@@ -11,15 +11,21 @@ class Lawnmower :
     bool     dockInRange;
 
     Location calculateDestination() const;
+    Location testCalculateDestination(const Location&, const float&) const;
     Location offsetCalculation() const;
 
 public:
     static unsigned long stepCounter;
     Lawnmower(const Pixel&, const Pixel&);
+    Location getLocation() const;
     Pixel destination() const;
+    Pixel testDestination(const Location&, const float&) const;
     void newHeading();
     Location move(Pixel&);
+    Location testMove(const Location&, const float&) const;
+    float lineToDock() const;
     bool batteryLow() const;
+    void moveToDock();
     void recharge();
     std::string getTelemetry() const;
     void printTelemetry() const;

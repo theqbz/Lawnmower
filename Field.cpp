@@ -8,25 +8,32 @@ Field::Field(const char& icon, const Pixel& pixel, const Pixel& margin) :
     if (icon == MAP_GRASS_ICON) {
         uncutGrassCounter++;
         grass = true;
+        available = true;
         this->icon = GRASS_NEW_ICON;
         this->colors = GRASS_COLOR;
     }
     else if (icon == MAP_BARRIER_ICON) {
         grass = false;
+        available = false;
         this->icon = BARRIER_ICON;
         this->colors = BARRIER_COLOR;
     }
     else if (icon == MAP_TREE_ICON) {
         grass = false;
+        available = false;
         this->icon = TREE_ICON;
         this->colors = TREE_COLOR;
     }
     else if (icon == MAP_DOCK_ICON) {
         grass = false;
+        available = true;
         this->icon = DOCK_ICON;
         this->colors = DOCK_COLOR;
     }
-    else grass = false;
+    else {
+        grass = false;
+        available = false;
+    }
     progress = 100;
 }
 
@@ -43,9 +50,9 @@ void Field::updateIcon()
     else icon = GRASS_0_ICON;
 }
 
-bool Field::isGrass()
+bool Field::isAwailable()
 {
-    return grass;
+    return available;
 }
 
 void Field::cutGrass(const float& amount)

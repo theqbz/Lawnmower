@@ -17,9 +17,12 @@ class Simulation
     vString readMapFromFile(const std::string&);
     void drawGarden() const;
     bool endSimulation() const;
+    void work();
     bool crash(const Pixel&) const;
     void moveAndCut();
     void cut(const Pixel&, const Location&);
+    bool dockIsVisible() const;
+    void goToDock();
     void refreshTelemetry() const;
     void clearTelemetryArea() const;
     void getUserCommand();

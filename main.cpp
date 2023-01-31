@@ -2,7 +2,7 @@
 
 void doSim()
 {
-    Simulation s("map2.txt");
+    Simulation s("map1.txt");
     s.doSimulation();
 }
 
