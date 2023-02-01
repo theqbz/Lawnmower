@@ -35,7 +35,7 @@ struct Colors
 #define PI                      3.14159265359f
 #define LAWNMOWER_ICON          char(219)
 #define LAWNMOWER_COLOR         Colors{1,0}
-#define LAWNMOWER_LOW_BATTERY   30
+#define LAWNMOWER_LOW_BATTERY   100
 #define DOCK_ICON               char(4)
 #define DOCK_COLOR              Colors{1,0}
 #define GRASS_NEW_ICON          char(219)
@@ -56,6 +56,7 @@ struct Colors
 #define MAP_TREE_ICON           't'
 #define MAP_DOCK_ICON           'd'
 #define MAP_UNDEFINED_ICON      '-'
-#define MAX_SPEED               10
-#define MIN_SPEED               500
+#define SPEED_DEFAULT           100
+#define SPEED_MAX               10
+#define SPEED_MIN               500
 

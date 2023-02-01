@@ -25,9 +25,9 @@ public:
     Location testMove(const Location&, const float&) const;
     float lineToDock() const;
     bool batteryLow() const;
+    bool batteryEmpty() const;
     void moveToDock();
     void recharge();
-    std::string getTelemetry() const;
     void printTelemetry() const;
 };
 

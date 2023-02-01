@@ -8,7 +8,7 @@ Lawnmower::Lawnmower(const Pixel& dockPixel, const Pixel& margin) :
     location.x = (float)dockPixel.x + 0.5f;
     location.y = (float)dockPixel.y + 0.5f;
     heading = PI / 2.0f;
-    battery = 100;
+    battery = 1000;
     dock = dockPixel;
     dockInRange = true;
 }
@@ -105,6 +105,11 @@ bool Lawnmower::batteryLow() const
     else return false;
 }
 
+bool Lawnmower::batteryEmpty() const
+{
+    return battery < 1;
+}
+
 void Lawnmower::moveToDock()
 {
     heading = lineToDock();
@@ -114,23 +119,13 @@ void Lawnmower::moveToDock()
 
 void Lawnmower::recharge()
 {
-    battery = 100;
-}
-
-std::string Lawnmower::getTelemetry() const
-{
-
-    return
-        "batt: " + std::to_string(battery) + "%"
-        + "\thead: " + std::to_string((short)((180 * heading) / PI)) + char(248)
-        + "\tcell: " + std::to_string(pixel.y) + "," + std::to_string(pixel.x)
-        + "\tloc: " + std::to_string(location.y) + "," + std::to_string(location.x);
+    battery = 1000;
 }
 
 void Lawnmower::printTelemetry() const
 {
     std::cout << "TELEMETRY\n"
-        << "\nbattery:\n" << std::setprecision(3) << battery << "%"
+        << "\nbattery:\n" << std::setprecision(3) << battery / 10 << "%"
         << "\ncell:\n" << pixel.x << ", " << pixel.y
         << "\nheading:\n" << (short)((180 * heading) / PI) << char(248)
         << "\nlocation:\n" << std::setprecision(4) << location.x << "," << location.y

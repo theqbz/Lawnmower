@@ -7,7 +7,7 @@ Simulation::Simulation(const std::string& filename)
     Pixel dock{ dockY - 1,dockX - 1 };
     robot = new Lawnmower({ dockY,dockX }, gardenOffset);
     quit = false;
-    speed = 100;
+    speed = SPEED_DEFAULT;
 }
 
 Simulation::~Simulation()
@@ -28,6 +28,7 @@ void Simulation::doSimulation()
     while (!endSimulation()) {
         while (!robot->batteryLow() && !endSimulation()) work();
         while (!dockIsVisible() && !endSimulation()) work();
+        if (endSimulation()) return;
         goToDock();
         refreshTelemetry();
     }
@@ -70,7 +71,7 @@ void Simulation::drawGarden() const
 
 bool Simulation::endSimulation() const
 {
-    return (quit || Field::uncutGrassCounter < 1);
+    return (quit || Field::uncutGrassCounter < 1 || robot->batteryEmpty());
 }
 
 void Simulation::work()
@@ -185,10 +186,10 @@ void Simulation::getUserCommand()
 void Simulation::changeSpeed(const char& command)
 {
     if (command == '+') {
-        if (speed == MAX_SPEED) return;
+        if (speed == SPEED_MAX) return;
         speed -= 10;
         return;
     }
-    if (speed = MIN_SPEED) return;
+    if (speed = SPEED_MIN) return;
     speed += 10;
 }
