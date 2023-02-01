@@ -4,12 +4,10 @@ Simulation::Simulation(const std::string& filename)
 {
     gardenOffset = { 2,13 };
     generateGarden(filename);
-    //dockY--;
-    //dockX--;
     Pixel dock{ dockY - 1,dockX - 1 };
     robot = new Lawnmower({ dockY,dockX }, gardenOffset);
     quit = false;
-    speed = 10;
+    speed = 100;
 }
 
 Simulation::~Simulation()
@@ -163,7 +161,7 @@ void Simulation::refreshTelemetry() const
     robot->printTelemetry();
     if (Field::uncutGrassCounter == 0) std::cout << "\n\n COMPLETE!\n";
     else std::cout << "\nremain:\n" << Field::uncutGrassCounter << " blocks";
-    Sleep(100);
+    Sleep(speed);
 }
 
 void Simulation::clearTelemetryArea() const
@@ -180,4 +178,17 @@ void Simulation::clearTelemetryArea() const
 void Simulation::getUserCommand()
 {
     if (GetAsyncKeyState(VK_ESCAPE)) quit = true;
+    if (GetAsyncKeyState(VK_UP)) changeSpeed('+');
+    if (GetAsyncKeyState(VK_DOWN)) changeSpeed('-');
+}
+
+void Simulation::changeSpeed(const char& command)
+{
+    if (command == '+') {
+        if (speed == MAX_SPEED) return;
+        speed -= 10;
+        return;
+    }
+    if (speed = MIN_SPEED) return;
+    speed += 10;
 }

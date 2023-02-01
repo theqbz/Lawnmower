@@ -56,4 +56,6 @@ struct Colors
 #define MAP_TREE_ICON           't'
 #define MAP_DOCK_ICON           'd'
 #define MAP_UNDEFINED_ICON      '-'
+#define MAX_SPEED               10
+#define MIN_SPEED               500
 

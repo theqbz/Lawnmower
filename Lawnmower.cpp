@@ -91,14 +91,12 @@ float Lawnmower::lineToDock() const
         if (pixel.y > dock.y) return (3.0f * PI) / 2.0f;
         if (pixel.y < dock.y) return PI / 2.0f;
     }
-    else if (pixel.y == dock.y) {
+    if (pixel.y == dock.y) {
         if (pixel.x > dock.x) return PI;
         if (pixel.x < dock.x) return 0.0f;
     }
-    else {
-        if (pixel.x > dock.x) return atan((location.y - (dock.y + 0.5)) / (location.x - (dock.x + 0.5))) + PI;
-        if (pixel.x < dock.x) return atan((location.y - (dock.y + 0.5)) / (location.x - (dock.x + 0.5)));
-    }
+    if (pixel.x > dock.x) return (float)atan((location.y - (dock.y + 0.5)) / (location.x - (dock.x + 0.5))) + PI;
+    if (pixel.x < dock.x) return (float)atan((location.y - (dock.y + 0.5)) / (location.x - (dock.x + 0.5)));
 }
 
 bool Lawnmower::batteryLow() const

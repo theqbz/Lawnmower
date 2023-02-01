@@ -26,6 +26,7 @@ class Simulation
     void refreshTelemetry() const;
     void clearTelemetryArea() const;
     void getUserCommand();
+    void changeSpeed(const char&);
 
 public:
     Simulation(const std::string&);
