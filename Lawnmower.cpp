@@ -130,12 +130,14 @@ bool Lawnmower::batteryLow() const
 
 void Lawnmower::trackBack()
 {
+    if (currentWaypoint == nullptr) return;
     location.y = (float)currentWaypoint->getCoordinates().y + 0.5f;
     location.x = (float)currentWaypoint->getCoordinates().x + 0.5f;
     pixel.reciveLocation(location);
     currentWaypoint = currentWaypoint->getPrevious();
     battery--;
     stepCounter++;
+    draw();
 }
 
 void Lawnmower::moveToDock()
