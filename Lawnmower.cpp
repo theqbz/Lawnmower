@@ -11,6 +11,13 @@ Lawnmower::Lawnmower(const Pixel& dockPixel, const Pixel& margin) :
     battery = 100;
     dock = dockPixel;
     dockInRange = true;
+    currentWaypoint = new Waypoint(dockPixel, Screen::memoryOffset, nullptr);
+    memory.push_back(currentWaypoint);
+}
+
+Lawnmower::~Lawnmower()
+{
+    for (int m = 0; m < memory.size(); m++) delete memory[m];
 }
 
 Location Lawnmower::getLocation() const
@@ -40,6 +47,18 @@ Location Lawnmower::offsetCalculation() const
     offset.y = location.y - ((short)location.y + 0.5f);
     offset.x = location.x - ((short)location.x + 0.5f);
     return offset;
+}
+
+Waypoint* Lawnmower::setWaypoint(const Pixel& pixel)
+{
+    for (int p = 0; p < memory.size(); p++) {
+        if (pixel == memory[p]->getCoordinates()) {
+            memory[p]->update(currentWaypoint);
+            return memory[p];
+        }
+    }
+    memory.push_back(new Waypoint(pixel, Screen::memoryOffset, currentWaypoint));
+    return memory.back();
 }
 
 Pixel Lawnmower::destination() const
@@ -76,6 +95,8 @@ Location Lawnmower::move(Pixel& destinationPixel)
     pixel.reciveLocation(location);
     battery--;
     stepCounter++;
+    currentWaypoint = setWaypoint(pixel);
+    currentWaypoint->draw();
     destinationPixel = pixel;
     return offsetCalculation();
 }
@@ -96,8 +117,8 @@ float Lawnmower::lineToDock() const
         if (pixel.x < dock.x) return 0.0f;
     }
     else {
-        if (pixel.x > dock.x) return atan((location.y - (dock.y + 0.5)) / (location.x - (dock.x + 0.5))) + PI;
-        if (pixel.x < dock.x) return atan((location.y - (dock.y + 0.5)) / (location.x - (dock.x + 0.5)));
+        if (pixel.x > dock.x) return (float)atan((location.y - (dock.y + 0.5)) / (location.x - (dock.x + 0.5))) + PI;
+        if (pixel.x < dock.x) return (float)atan((location.y - (dock.y + 0.5)) / (location.x - (dock.x + 0.5)));
     }
 }
 

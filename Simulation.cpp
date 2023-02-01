@@ -1,13 +1,14 @@
 #include "Simulation.h"
 
+
 Simulation::Simulation(const std::string& filename)
 {
-    gardenOffset = { 2,13 };
+    Screen::gardenOffset = { 2,13 };
     generateGarden(filename);
-    //dockY--;
-    //dockX--;
     Pixel dock{ dockY - 1,dockX - 1 };
-    robot = new Lawnmower({ dockY,dockX }, gardenOffset);
+    Screen::memoryOffset.y = Screen::gardenOffset.y;
+    Screen::memoryOffset.x = Screen::gardenOffset.x + gardenX + 2;
+    robot = new Lawnmower({ dockY,dockX }, Screen::gardenOffset);
     quit = false;
     speed = 10;
 }
@@ -41,7 +42,7 @@ void Simulation::generateGarden(const std::string& filename)
     garden = new Field**[gardenY];
     for (short y = 0; y < gardenY; y++) garden[y] = new Field*[gardenX];
     for (short y = 0; y < gardenY; y++) for (short x = 0; x < gardenX; x++) 
-        garden[y][x] = new Field(gardenMap[y][x], { y,x }, gardenOffset);
+        garden[y][x] = new Field(gardenMap[y][x], { y,x }, Screen::gardenOffset);
 }
 
 vString Simulation::readMapFromFile(const std::string& filename)
@@ -170,7 +171,7 @@ void Simulation::clearTelemetryArea() const
 {
     short rows = 14;
     for (short y = 0; y < rows; y++) {
-        for (short x = 0; x < gardenOffset.x-1; x++) {
+        for (short x = 0; x < Screen::gardenOffset.x-1; x++) {
             std::cout << " ";
         }
         std::cout << "\n";

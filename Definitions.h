@@ -56,4 +56,14 @@ struct Colors
 #define MAP_TREE_ICON           't'
 #define MAP_DOCK_ICON           'd'
 #define MAP_UNDEFINED_ICON      '-'
+#define WAYPOINT_ICON           char(158)
+#define WAYPOINT_COLOR          Colors{1,0}
+#define ARROW_UP                char(24)
+#define ARROW_DOWN              char(25)
+#define ARROW_LEFT              char(27)
+#define ARROW_RIGHT             char(26)
+#define ARROW_UPLEFT            char(218)
+#define ARROW_UPRIGHT           char(191)
+#define ARROW_DOWNLEFT          char(192)
+#define ARROW_DOWNRIGHT         char(217)
 

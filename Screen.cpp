@@ -2,6 +2,8 @@
 
 HANDLE Screen::console = GetStdHandle(STD_OUTPUT_HANDLE);
 HANDLE Screen::keyboard = GetStdHandle(STD_INPUT_HANDLE);
+Pixel  Screen::gardenOffset = { 0,0 };
+Pixel  Screen::memoryOffset = { 0,0 };
 
 Screen::Screen(const Pixel& pixel, const Pixel& margin) :
     pixel(pixel), margin(margin)

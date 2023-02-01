@@ -7,7 +7,6 @@ class Simulation
 {
     short      gardenX, gardenY;
     short      dockX, dockY;
-    Pixel      gardenOffset;
     Field***   garden;
     Lawnmower* robot;
     bool       quit;
