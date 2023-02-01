@@ -8,6 +8,7 @@ class Waypoint :
     short distance;
     Waypoint* previous;
 
+    bool notNeighbours(const Waypoint*) const;
     void updateIcon();
 
 public:

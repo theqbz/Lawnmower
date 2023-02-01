@@ -1,22 +1,38 @@
 #include "Waypoint.h"
 
+bool Waypoint::notNeighbours(const Waypoint* waypoint) const
+{
+    if (abs(this->coordinates.y - waypoint->coordinates.y) > 1 ||
+        abs(this->coordinates.x - waypoint->coordinates.x) > 1)
+        return true;
+    return false;
+}
+
 void Waypoint::updateIcon()
 {
     if (this->getPixel().x == this->previous->getPixel().x) {
-        if (this->getPixel().y > this->previous->getPixel().y) this->icon = ARROW_UP;
-        else this->icon = ARROW_DOWN;
+        if (this->getPixel().y == this->previous->getPixel().y + 1) this->icon = ARROW_UP;
+        else if (this->getPixel().y > this->previous->getPixel().y + 1) this->icon = ARROW_UP_FAR;
+        else if (this->getPixel().y == this->previous->getPixel().y - 1) this->icon = ARROW_DOWN;
+        else this->icon = ARROW_DOWN_FAR;
     }
     else if (this->getPixel().y == this->previous->getPixel().y) {
-        if (this->getPixel().x > this->previous->getPixel().x) this->icon = ARROW_LEFT;
-        else this->icon = ARROW_RIGHT;
+        if (this->getPixel().x == this->previous->getPixel().x + 1) this->icon = ARROW_LEFT;
+        else if (this->getPixel().x > this->previous->getPixel().x + 1) this->icon = ARROW_LEFT_FAR;
+        else if (this->getPixel().x == this->previous->getPixel().x - 1) this->icon = ARROW_RIGHT;
+        else this->icon = ARROW_RIGHT_FAR;
     }
     else if (this->getPixel().x > this->previous->getPixel().x) {
-        if (this->getPixel().y > this->previous->getPixel().y) this->icon = ARROW_UPLEFT;
-        else this->icon = ARROW_DOWNLEFT;
+        if (this->getPixel().y == this->previous->getPixel().y + 1) this->icon = ARROW_UPLEFT;
+        else if (this->getPixel().y > this->previous->getPixel().y + 1) this->icon = ARROW_UPLEFT_FAR;
+        else if (this->getPixel().y == this->previous->getPixel().y - 1) this->icon = ARROW_DOWNLEFT;
+        else this->icon = ARROW_DOWNLEFT_FAR;
     }
     else if (this->getPixel().x < this->previous->getPixel().x) {
-        if (this->getPixel().y > this->previous->getPixel().x) this->icon = ARROW_UPRIGHT;
-        else this->icon = ARROW_DOWNRIGHT;
+        if (this->getPixel().y == this->previous->getPixel().x + 1) this->icon = ARROW_UPRIGHT;
+        else if (this->getPixel().y > this->previous->getPixel().x + 1) this->icon = ARROW_UPRIGHT_FAR;
+        else if (this->getPixel().y == this->previous->getPixel().x - 1) this->icon = ARROW_DOWNRIGHT;
+        else this->icon = ARROW_DOWNRIGHT_FAR;
     }
 }
 
@@ -49,6 +65,10 @@ Waypoint* Waypoint::getPrevious() const
 
 void Waypoint::update(Waypoint* waypoint)
 {
+    if (this == waypoint) return;
+    if (this == waypoint->previous) return;
+    if (waypoint == this->previous) return;
+    if (notNeighbours(waypoint)) return;
     if (this->distance == waypoint->distance) return;
     if (this->distance < waypoint->distance + 1) {
         waypoint->distance = this->distance + 1;

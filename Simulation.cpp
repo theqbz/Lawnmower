@@ -130,7 +130,6 @@ void Simulation::cut(const Pixel& pixel, const Location& offset)
 
 bool Simulation::dockIsVisible() const
 {
-    // az irány nem megfelelõ még
     Pixel    dock         = { dockY,dockX };
     Pixel    nextPixel    = robot->getPixel();
     float    testHeading  = robot->lineToDock();
