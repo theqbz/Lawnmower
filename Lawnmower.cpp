@@ -97,7 +97,7 @@ Location Lawnmower::move(Pixel& destinationPixel)
     stepCounter++;
     currentWaypoint = setWaypoint(pixel);
     currentWaypoint->draw();
-    if (currentWaypoint->getDistance() + 1 > battery) lowBattery = true;
+    if (currentWaypoint->getDistance() + 10 > battery) lowBattery = true;
     destinationPixel = pixel;
     return offsetCalculation();
 }
@@ -132,6 +132,7 @@ void Lawnmower::trackBack()
 {
     location.y = (float)currentWaypoint->getCoordinates().y + 0.5f;
     location.x = (float)currentWaypoint->getCoordinates().x + 0.5f;
+    pixel.reciveLocation(location);
     currentWaypoint = currentWaypoint->getPrevious();
     battery--;
     stepCounter++;
