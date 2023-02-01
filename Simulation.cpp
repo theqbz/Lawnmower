@@ -30,7 +30,8 @@ void Simulation::doSimulation()
     drawGarden();
     while (!endSimulation()) {
         while (!robot->batteryLow() && !endSimulation()) work();
-        while (!dockIsVisible() && !endSimulation()) work();
+        while (!dockIsVisible() && !endSimulation()) robot->trackBack();
+        if (endSimulation()) return;
         goToDock();
         refreshTelemetry();
     }

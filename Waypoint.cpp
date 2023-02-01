@@ -37,6 +37,16 @@ Pixel Waypoint::getCoordinates() const
     return coordinates;
 }
 
+short Waypoint::getDistance() const
+{
+    return distance;
+}
+
+Waypoint* Waypoint::getPrevious() const
+{
+    return previous;
+}
+
 void Waypoint::update(Waypoint* waypoint)
 {
     if (this->distance == waypoint->distance) return;

@@ -9,7 +9,7 @@ class Lawnmower :
     float    heading;
     short    battery;
     Pixel    dock;
-    bool     dockInRange;
+    bool     lowBattery;
     std::vector<Waypoint*> memory;
     Waypoint* currentWaypoint;
 
@@ -20,6 +20,7 @@ class Lawnmower :
 
 public:
     static unsigned long stepCounter;
+
     Lawnmower(const Pixel&, const Pixel&);
     ~Lawnmower();
     Location getLocation() const;
@@ -30,6 +31,7 @@ public:
     Location testMove(const Location&, const float&) const;
     float lineToDock() const;
     bool batteryLow() const;
+    void trackBack();
     void moveToDock();
     void recharge();
     std::string getTelemetry() const;

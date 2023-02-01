@@ -12,6 +12,7 @@
 
 typedef std::vector<std::string> vString;
 
+
 struct Location
 {
     float y, x;

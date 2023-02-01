@@ -13,6 +13,8 @@ class Waypoint :
 public:
     Waypoint(const Pixel&, const Pixel&, Waypoint*);
     Pixel getCoordinates() const;
+    short getDistance() const;
+    Waypoint* getPrevious() const;
     void update(Waypoint*);
 };
 

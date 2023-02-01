@@ -10,7 +10,7 @@ Lawnmower::Lawnmower(const Pixel& dockPixel, const Pixel& margin) :
     heading = PI / 2.0f;
     battery = 100;
     dock = dockPixel;
-    dockInRange = true;
+    lowBattery = false;
     currentWaypoint = new Waypoint(dockPixel, Screen::memoryOffset, nullptr);
     memory.push_back(currentWaypoint);
 }
@@ -97,6 +97,7 @@ Location Lawnmower::move(Pixel& destinationPixel)
     stepCounter++;
     currentWaypoint = setWaypoint(pixel);
     currentWaypoint->draw();
+    if (currentWaypoint->getDistance() + 1 > battery) lowBattery = true;
     destinationPixel = pixel;
     return offsetCalculation();
 }
@@ -124,8 +125,16 @@ float Lawnmower::lineToDock() const
 
 bool Lawnmower::batteryLow() const
 {
-    if (battery < LAWNMOWER_LOW_BATTERY) return true;
-    else return false;
+    return lowBattery;
+}
+
+void Lawnmower::trackBack()
+{
+    location.y = (float)currentWaypoint->getCoordinates().y + 0.5f;
+    location.x = (float)currentWaypoint->getCoordinates().x + 0.5f;
+    currentWaypoint = currentWaypoint->getPrevious();
+    battery--;
+    stepCounter++;
 }
 
 void Lawnmower::moveToDock()
@@ -133,11 +142,14 @@ void Lawnmower::moveToDock()
     heading = lineToDock();
     location = calculateDestination();
     pixel.reciveLocation(location);
+    battery--;
+    stepCounter++;
 }
 
 void Lawnmower::recharge()
 {
     battery = 100;
+    lowBattery = false;
 }
 
 std::string Lawnmower::getTelemetry() const
