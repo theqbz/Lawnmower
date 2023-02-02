@@ -25,10 +25,11 @@ class Simulation
     void refreshTelemetry() const;
     void clearTelemetryArea() const;
     void getUserCommand();
+    char result() const;
 
 public:
     Simulation(const std::string&);
     ~Simulation();
-    void doSimulation();
+    char doSimulation();
 };
 

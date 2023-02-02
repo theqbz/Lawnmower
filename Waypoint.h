@@ -4,8 +4,8 @@
 class Waypoint :
     public Screen
 {
-    Pixel coordinates;
-    short distance;
+    Pixel     coordinates;
+    short     distance;
     Waypoint* previous;
 
     bool notNeighbours(const Waypoint*) const;

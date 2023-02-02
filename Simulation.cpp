@@ -5,12 +5,11 @@ Simulation::Simulation(const std::string& filename)
 {
     Screen::gardenOffset = { 2,13 };
     generateGarden(filename);
-    Pixel dock{ dockY - 1,dockX - 1 };
     Screen::memoryOffset.y = Screen::gardenOffset.y;
     Screen::memoryOffset.x = Screen::gardenOffset.x + gardenX + 2;
     robot = new Lawnmower({ dockY,dockX }, Screen::gardenOffset);
     quit = false;
-    speed = 10;
+    speed = 1;
 }
 
 Simulation::~Simulation()
@@ -25,51 +24,17 @@ Simulation::~Simulation()
     delete robot;
 }
 
-void Simulation::doSimulation()
+char Simulation::doSimulation()
 {
-    drawGarden();
     while (!endSimulation()) {
+        drawGarden();
         while (!robot->batteryLow() && !endSimulation()) work();
         while (!dockIsVisible() && !endSimulation()) robot->trackBack();
-        if (endSimulation()) return;
+        if (endSimulation()) return result();
         goToDock();
         refreshTelemetry();
     }
-}
-
-void Simulation::generateGarden(const std::string& filename)
-{
-    vString gardenMap = readMapFromFile(filename);
-    garden = new Field**[gardenY];
-    for (short y = 0; y < gardenY; y++) garden[y] = new Field*[gardenX];
-    for (short y = 0; y < gardenY; y++) for (short x = 0; x < gardenX; x++) 
-        garden[y][x] = new Field(gardenMap[y][x], { y,x }, Screen::gardenOffset);
-}
-
-vString Simulation::readMapFromFile(const std::string& filename)
-{
-    vString       map;
-    std::ifstream file(filename);
-    std::string   line;
-    while (file >> line) map.push_back(line);
-    file.close();
-    gardenX = (short)map[0].length();
-    gardenY = (short)map.size();
-    for (short y = 0; y < map.size(); y++)
-        if (map[y].find(MAP_DOCK_ICON) != std::string::npos) {
-            dockY = y;
-            dockX = (short)map[y].find(MAP_DOCK_ICON);
-        }
-    return map;
-}
-
-void Simulation::drawGarden() const
-{
-    system("cls");
-    std::cout << "GrassEater Simulation";
-    for (short y = 0; y < gardenY; y++) for (short x = 0; x < gardenX; x++) 
-            garden[y][x]->draw();
-    robot->draw();
+    return result();
 }
 
 bool Simulation::endSimulation() const
@@ -164,7 +129,7 @@ void Simulation::refreshTelemetry() const
     robot->printTelemetry();
     if (Field::uncutGrassCounter == 0) std::cout << "\n\n COMPLETE!\n";
     else std::cout << "\nremain:\n" << Field::uncutGrassCounter << " blocks";
-    Sleep(100);
+    Sleep(speed);
 }
 
 void Simulation::clearTelemetryArea() const
@@ -178,7 +143,58 @@ void Simulation::clearTelemetryArea() const
     }
 }
 
+void Simulation::generateGarden(const std::string& filename)
+{
+    vString gardenMap = readMapFromFile(filename);
+    garden = new Field**[gardenY];
+    for (short y = 0; y < gardenY; y++)
+        garden[y] = new Field*[gardenX];
+    for (short y = 0; y < gardenY; y++)
+        for (short x = 0; x < gardenX; x++)
+            garden[y][x] = new Field(gardenMap[y][x], { y,x }, Screen::gardenOffset);
+}
+
+vString Simulation::readMapFromFile(const std::string& filename)
+{
+    vString       map;
+    std::ifstream file(filename);
+    std::string   line;
+    while (file >> line) map.push_back(line);
+    file.close();
+    gardenX = (short)map[0].length();
+    gardenY = (short)map.size();
+    for (short y = 0; y < map.size(); y++)
+        if (map[y].find(MAP_DOCK_ICON) != std::string::npos) {
+            dockY = y;
+            dockX = (short)map[y].find(MAP_DOCK_ICON);
+        }
+    return map;
+}
+
+void Simulation::drawGarden() const
+{
+    for (short y = 0; y < gardenY; y++) for (short x = 0; x < gardenX; x++) 
+            garden[y][x]->draw();
+    robot->draw();
+}
+
 void Simulation::getUserCommand()
 {
     if (GetAsyncKeyState(VK_ESCAPE)) quit = true;
+}
+
+char Simulation::result() const
+{
+    if (quit) {
+        std::cout << "\n\n QUIT\n";
+        return 'Q';
+    }
+    if (robot->getBatteryLevel() < 1) {
+        std::cout << "\n\n BATTERY\n";
+        return 'B';
+    }
+    if (Field::uncutGrassCounter < 1) {
+        return 'A';
+    }
+    return '0';
 }

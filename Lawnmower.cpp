@@ -25,6 +25,11 @@ Location Lawnmower::getLocation() const
     return location;
 }
 
+short Lawnmower::getBatteryLevel() const
+{
+    return battery;
+}
+
 Location Lawnmower::calculateDestination() const
 {
     Location destination{ 0.0f,0.0f };
@@ -113,14 +118,12 @@ float Lawnmower::lineToDock() const
         if (pixel.y > dock.y) return (3.0f * PI) / 2.0f;
         if (pixel.y < dock.y) return PI / 2.0f;
     }
-    else if (pixel.y == dock.y) {
+    if (pixel.y == dock.y) {
         if (pixel.x > dock.x) return PI;
         if (pixel.x < dock.x) return 0.0f;
     }
-    else {
-        if (pixel.x > dock.x) return (float)atan((location.y - (dock.y + 0.5)) / (location.x - (dock.x + 0.5))) + PI;
-        if (pixel.x < dock.x) return (float)atan((location.y - (dock.y + 0.5)) / (location.x - (dock.x + 0.5)));
-    }
+    if (pixel.x > dock.x) return (float)atan((location.y - (dock.y + 0.5)) / (location.x - (dock.x + 0.5))) + PI;
+    return (float)atan((location.y - (dock.y + 0.5)) / (location.x - (dock.x + 0.5)));
 }
 
 bool Lawnmower::batteryLow() const
@@ -130,7 +133,6 @@ bool Lawnmower::batteryLow() const
 
 void Lawnmower::trackBack()
 {
-    if (currentWaypoint == nullptr) return;
     location.y = (float)currentWaypoint->getCoordinates().y + 0.5f;
     location.x = (float)currentWaypoint->getCoordinates().x + 0.5f;
     pixel.reciveLocation(location);

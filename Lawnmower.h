@@ -24,6 +24,7 @@ public:
     Lawnmower(const Pixel&, const Pixel&);
     ~Lawnmower();
     Location getLocation() const;
+    short getBatteryLevel() const;
     Pixel destination() const;
     Pixel testDestination(const Location&, const float&) const;
     void newHeading();
