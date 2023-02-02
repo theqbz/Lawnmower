@@ -36,6 +36,5 @@ public:
     void moveToDock();
     void recharge();
     void printTelemetry() const;
-
 };
 

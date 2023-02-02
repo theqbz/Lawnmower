@@ -3,12 +3,12 @@
 char doSim(int i)
 {
     system("cls");
-    std::cout << "GrassEater Simulation\t" << i;
+    std::cout << "GrassEater\t simulation " << i;
     Simulation s("map2.txt");
     return s.doSimulation();
 }
 
-int main()
+int main(int argc, char* argv[])
 {
     srand((unsigned)time(NULL));
     int i = 0;
