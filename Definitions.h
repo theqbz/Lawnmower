@@ -36,7 +36,8 @@ struct Colors
 #define PI                      3.14159265359f
 #define LAWNMOWER_ICON          char(219)
 #define LAWNMOWER_COLOR         Colors{1,0}
-#define LAWNMOWER_LOW_BATTERY   30
+#define LAWNMOWER_FULL_BATTERY  500
+#define LAWNMOWER_LOW_BATTERY   100
 #define DOCK_ICON               char(4)
 #define DOCK_COLOR              Colors{1,0}
 #define GRASS_NEW_ICON          char(219)

@@ -35,7 +35,6 @@ public:
     void trackBack();
     void moveToDock();
     void recharge();
-    std::string getTelemetry() const;
     void printTelemetry() const;
 
 };

@@ -4,7 +4,7 @@ char doSim(int i)
 {
     system("cls");
     std::cout << "GrassEater Simulation\t" << i;
-    Simulation s("map1.txt");
+    Simulation s("map2.txt");
     return s.doSimulation();
 }
 
