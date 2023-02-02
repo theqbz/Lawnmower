@@ -1,5 +1,6 @@
 #pragma once
 #include "Screen.h"
+#include "Waypoint.h"
 
 class Lawnmower :
     public Screen
@@ -8,16 +9,22 @@ class Lawnmower :
     float    heading;
     short    battery;
     Pixel    dock;
-    bool     dockInRange;
+    bool     lowBattery;
+    std::vector<Waypoint*> memory;
+    Waypoint* currentWaypoint;
 
     Location calculateDestination() const;
     Location testCalculateDestination(const Location&, const float&) const;
     Location offsetCalculation() const;
+    Waypoint* setWaypoint(const Pixel&);
 
 public:
     static unsigned long stepCounter;
+
     Lawnmower(const Pixel&, const Pixel&);
+    ~Lawnmower();
     Location getLocation() const;
+    short getBatteryLevel() const;
     Pixel destination() const;
     Pixel testDestination(const Location&, const float&) const;
     void newHeading();
@@ -25,6 +32,7 @@ public:
     Location testMove(const Location&, const float&) const;
     float lineToDock() const;
     bool batteryLow() const;
+    void trackBack();
     bool batteryEmpty() const;
     void moveToDock();
     void recharge();

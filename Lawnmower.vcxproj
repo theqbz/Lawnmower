@@ -133,6 +133,7 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Screen.cpp" />
     <ClCompile Include="Simulation.cpp" />
+    <ClCompile Include="Waypoint.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AllSimulationHeaders.h" />
@@ -141,6 +142,7 @@
     <ClInclude Include="Lawnmower.h" />
     <ClInclude Include="Screen.h" />
     <ClInclude Include="Simulation.h" />
+    <ClInclude Include="Waypoint.h" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="map0.txt" />

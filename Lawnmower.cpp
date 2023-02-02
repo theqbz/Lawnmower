@@ -10,12 +10,24 @@ Lawnmower::Lawnmower(const Pixel& dockPixel, const Pixel& margin) :
     heading = PI / 2.0f;
     battery = 1000;
     dock = dockPixel;
-    dockInRange = true;
+    lowBattery = false;
+    currentWaypoint = new Waypoint(dockPixel, Screen::memoryOffset, nullptr);
+    memory.push_back(currentWaypoint);
+}
+
+Lawnmower::~Lawnmower()
+{
+    for (int m = 0; m < memory.size(); m++) delete memory[m];
 }
 
 Location Lawnmower::getLocation() const
 {
     return location;
+}
+
+short Lawnmower::getBatteryLevel() const
+{
+    return battery;
 }
 
 Location Lawnmower::calculateDestination() const
@@ -40,6 +52,18 @@ Location Lawnmower::offsetCalculation() const
     offset.y = location.y - ((short)location.y + 0.5f);
     offset.x = location.x - ((short)location.x + 0.5f);
     return offset;
+}
+
+Waypoint* Lawnmower::setWaypoint(const Pixel& pixel)
+{
+    for (int p = 0; p < memory.size(); p++) {
+        if (pixel == memory[p]->getCoordinates()) {
+            memory[p]->update(currentWaypoint);
+            return memory[p];
+        }
+    }
+    memory.push_back(new Waypoint(pixel, Screen::memoryOffset, currentWaypoint));
+    return memory.back();
 }
 
 Pixel Lawnmower::destination() const
@@ -76,6 +100,9 @@ Location Lawnmower::move(Pixel& destinationPixel)
     pixel.reciveLocation(location);
     battery--;
     stepCounter++;
+    currentWaypoint = setWaypoint(pixel);
+    currentWaypoint->draw();
+    if (currentWaypoint->getDistance() + 10 > battery) lowBattery = true;
     destinationPixel = pixel;
     return offsetCalculation();
 }
@@ -101,8 +128,18 @@ float Lawnmower::lineToDock() const
 
 bool Lawnmower::batteryLow() const
 {
-    if (battery < LAWNMOWER_LOW_BATTERY) return true;
-    else return false;
+    return lowBattery;
+}
+
+void Lawnmower::trackBack()
+{
+    location.y = (float)currentWaypoint->getCoordinates().y + 0.5f;
+    location.x = (float)currentWaypoint->getCoordinates().x + 0.5f;
+    pixel.reciveLocation(location);
+    currentWaypoint = currentWaypoint->getPrevious();
+    battery--;
+    stepCounter++;
+    draw();
 }
 
 bool Lawnmower::batteryEmpty() const
@@ -115,6 +152,8 @@ void Lawnmower::moveToDock()
     heading = lineToDock();
     location = calculateDestination();
     pixel.reciveLocation(location);
+    battery--;
+    stepCounter++;
 }
 
 void Lawnmower::recharge()

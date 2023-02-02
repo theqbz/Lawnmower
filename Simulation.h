@@ -7,7 +7,6 @@ class Simulation
 {
     short      gardenX, gardenY;
     short      dockX, dockY;
-    Pixel      gardenOffset;
     Field***   garden;
     Lawnmower* robot;
     bool       quit;
@@ -26,11 +25,12 @@ class Simulation
     void refreshTelemetry() const;
     void clearTelemetryArea() const;
     void getUserCommand();
+    char result() const;
     void changeSpeed(const char&);
 
 public:
     Simulation(const std::string&);
     ~Simulation();
-    void doSimulation();
+    char doSimulation();
 };
 
